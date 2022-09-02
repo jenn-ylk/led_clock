@@ -52,22 +52,10 @@ enum setting {
 
 // TODO: look into interrupts for the buttons
 
+void disp_digit(int digit, int pin);
 void disp_hour(int hour);
 void disp_minute(int minute);
 unsigned long set_time();
-
-unsigned char digits[] = {
-  0x02,
-  0x9E,
-  0x24,
-  0x0C,
-  0x98,
-  0x48,
-  0x40,
-  0x1E,
-  0x00,
-  0x18
-};
 
 unsigned long last_twelve;
 // clock setting variables
@@ -100,14 +88,21 @@ void setup() {
 }
 
 void loop() {
+  // TODO: deal with time going past 12 hours, and also with overflow of millis
+  // in case the clock was idling for a while (this isn't totally foolproof if millis() overflows twice but will be alright)
+  unsigned long time = (millis() - last_twelve) / 1000;
+  while (time / HOUR_SEC >= 12) {
+    unsigned long add_hour = HOUR_SEC;
+    unsigned long add_millis = add_hour * 1000 * 12;
+    last_twelve += add_millis;
+  }
   // TODO: microphone
   /*
   analogRead(MIC_IN);
   */
   // TODO: neopixels
   // TODO: buttons
-
-  unsigned long time = (millis() - last_twelve) / 1000;
+  
   // TODO: this is ugly, put it in a function
   if (clock_setting == HOURS) {
     Serial.println("Setting hour");
@@ -160,35 +155,33 @@ void loop() {
 
 }
 
+void disp_digit(int digit, int pin) {
+  unsigned char digits[] = {
+    0x02,
+    0x9E,
+    0x24,
+    0x0C,
+    0x98,
+    0x48,
+    0x40,
+    0x1E,
+    0x00,
+    0x18
+  };
+  digitalWrite(LATCH_PIN, LOW);
+  shiftOut(DATA_PIN, CLOCK_PIN, MSBFIRST, digits[digit]);
+  digitalWrite(LATCH_PIN, HIGH);
+  digitalWrite(pin, HIGH);
+  delay(50);
+  digitalWrite(pin, LOW);
+}
 
 void disp_hour(int hour) {
-  digitalWrite(LATCH_PIN, LOW);
-  shiftOut(DATA_PIN, CLOCK_PIN, MSBFIRST, digits[hour / 10]);
-  digitalWrite(LATCH_PIN, HIGH);
-  digitalWrite(DIG1_PIN, HIGH);
-  delay(50);
-  digitalWrite(DIG1_PIN, LOW);
-
-  digitalWrite(LATCH_PIN, LOW);
-  shiftOut(DATA_PIN, CLOCK_PIN, MSBFIRST, digits[hour % 10]);
-  digitalWrite(LATCH_PIN, HIGH);
-  digitalWrite(DIG2_PIN, HIGH);
-  delay(50);
-  digitalWrite(DIG2_PIN, LOW);
+  disp_digit(hour / 10, DIG1_PIN);
+  disp_digit(hour % 10, DIG2_PIN);
 }
 
 void disp_minute(int minute) {
-  digitalWrite(LATCH_PIN, LOW);
-  shiftOut(DATA_PIN, CLOCK_PIN, MSBFIRST, digits[minute / 10]);
-  digitalWrite(LATCH_PIN, HIGH);
-  digitalWrite(DIG3_PIN, HIGH);
-  delay(50);
-  digitalWrite(DIG3_PIN, LOW);
-
-  digitalWrite(LATCH_PIN, LOW);
-  shiftOut(DATA_PIN, CLOCK_PIN, MSBFIRST, digits[minute % 10]);
-  digitalWrite(LATCH_PIN, HIGH);
-  digitalWrite(DIG4_PIN, HIGH);
-  delay(50);
-  digitalWrite(DIG4_PIN, LOW);
+  disp_digit(minute / 10, DIG3_PIN);
+  disp_digit(minute % 10, DIG4_PIN);
 }
