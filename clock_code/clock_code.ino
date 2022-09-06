@@ -30,18 +30,18 @@ enum setting {
 #define CLOCK_PIN 9
 #define LATCH_PIN 10
 // - digit pins
-#define DIG1_PIN  1
-#define DIG2_PIN  2
-#define DIG3_PIN  3
-#define DIG4_PIN  4
+#define DIG1_PIN  2
+#define DIG2_PIN  3
+#define DIG3_PIN  4
+#define DIG4_PIN  5
 // - button pins
 #define MODE_PIN  0
-#define SET_PIN   5
-#define UP_PIN    6
-#define DOWN_PIN  7
+#define SET_PIN   A1
+#define UP_PIN    A2
+#define DOWN_PIN  A3
 
 // - neopixels
-#define PIX_PIN   A1 
+#define PIX_PIN   6 
 #define NUM_PIX   84
 
 #define MIC_IN    A0 
@@ -119,10 +119,12 @@ void loop() {
     disp_hour(set_hour);
     disp_minute(set_minute);
   } else {
-    Serial.print(time / HOUR_SEC);
+    int hour = time / HOUR_SEC;
+    if (hour == 0) hour = 12;
+    Serial.print(hour);
     Serial.print(":");
     Serial.println((time % HOUR_SEC) / MINUTE_SEC);
-    disp_hour(time / HOUR_SEC);
+    disp_hour(hour);
     disp_minute((time % HOUR_SEC) / MINUTE_SEC);
   }
 
@@ -135,6 +137,7 @@ void loop() {
       last_twelve = millis() - (set_hour * HOUR_SEC + set_minute * MINUTE_SEC) * 1000;
     } else if (clock_setting == HOURS) {
       set_hour = time / HOUR_SEC;
+      if (set_hour == 0) set_hour = 12;
       set_minute = (time % HOUR_SEC) / MINUTE_SEC;
     }
   }
@@ -151,7 +154,7 @@ void loop() {
       set_minute = (time % HOUR_SEC) / MINUTE_SEC;
     }
   }
-  previous_set = set;
+  previous_mode = mode;
 
 }
 
@@ -166,13 +169,13 @@ void disp_digit(int digit, int pin) {
     0x40,
     0x1E,
     0x00,
-    0x18
+    0x08    
   };
   digitalWrite(LATCH_PIN, LOW);
-  shiftOut(DATA_PIN, CLOCK_PIN, MSBFIRST, digits[digit]);
+  shiftOut(DATA_PIN, CLOCK_PIN, LSBFIRST, digits[digit]);
   digitalWrite(LATCH_PIN, HIGH);
   digitalWrite(pin, HIGH);
-  delay(50);
+  delay(2);
   digitalWrite(pin, LOW);
 }
 
