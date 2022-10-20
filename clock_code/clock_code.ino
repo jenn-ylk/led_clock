@@ -13,7 +13,8 @@
 enum mode {
   CLOCK,
   LAMP,
-  SOUND,
+  SPECTRUM,
+  // SOUND,
   SLEEP,
   NUM_MODES
 };
@@ -43,6 +44,10 @@ enum setting {
 // - neopixels
 #define PIX_PIN   6 
 #define NUM_PIX   84
+#define HRS_PIX   24
+#define MINS_PIX  60
+#define HRS_ZERO  0
+#define MINS_ZERO 24
 
 #define MIC_IN    A0 
 
@@ -64,8 +69,15 @@ int set_hour = 0;
 int set_minute = 0;
 bool previous_set = false;
 
+int cur_hour = set_hour;
+int cur_minute = set_minute;
 int clock_mode = CLOCK;
 bool previous_mode = false;
+
+Adafruit_NeoPixel pixels(NUM_PIX, PIX_PIN, NEO_GRB + NEO_KHZ800);
+uint32_t clock_col = pixels.Color(255, 250, 185);
+uint32_t lamp_col = pixels.Color(30, 0, 50);
+uint32_t off_col = pixels.Color(0, 0, 0);
 
 void setup() {
   Serial.begin(9600);
@@ -84,10 +96,26 @@ void setup() {
   pinMode(SET_PIN, INPUT_PULLUP);
   pinMode(UP_PIN, INPUT_PULLUP);
   pinMode(DOWN_PIN, INPUT_PULLUP);
-  // TODO: set up the neopixels
+
+  // set up the neopixels
+  pixels.begin();
+  for (int i = 0; i < HRS_PIX; i++) {
+    if (i != (cur_hour + (cur_minute >= (MINS_PIX / 2)))) {
+      pixels.setPixelColor(HRS_ZERO + i, lamp_col);
+      pixels.show();
+    }
+  }
+  for (int i = 0; i < MINS_PIX; i++) {
+    if (i != cur_minute) {
+      pixels.setPixelColor(MINS_ZERO + i, lamp_col);
+      pixels.show();
+    }
+  }
+  
 }
 
 void loop() {
+  // TODO: if yo uuse an RTC, then this is not an issue!
   // TODO: deal with time going past 12 hours, and also with overflow of millis
   // in case the clock was idling for a while (this isn't totally foolproof if millis() overflows twice but will be alright)
   unsigned long time = (millis() - last_twelve) / 1000;
@@ -101,6 +129,7 @@ void loop() {
   analogRead(MIC_IN);
   */
   // TODO: neopixels
+  
   // TODO: buttons
   
   // TODO: this is ugly, put it in a function
@@ -120,12 +149,26 @@ void loop() {
     disp_minute(set_minute);
   } else {
     int hour = time / HOUR_SEC;
+    int minute = (time % HOUR_SEC) / MINUTE_SEC;
     if (hour == 0) hour = 12;
     Serial.print(hour);
     Serial.print(":");
-    Serial.println((time % HOUR_SEC) / MINUTE_SEC);
+    Serial.println(minute);
     disp_hour(hour);
-    disp_minute((time % HOUR_SEC) / MINUTE_SEC);
+    disp_minute(minute);
+
+    if (minute != cur_minute) {
+      pixels.setPixelColor(minute + MINS_ZERO, lamp_col);
+      pixels.setPixelColor(cur_minute + MINS_ZERO, off_col);
+      // change the hour counter over if onto the next half hour
+      if ((cur_minute >= MINS_PIX / 2) ^ (minute >= MINS_PIX / 2)) {
+        pixels.setPixelColor(minute + HOURS_ZERO, lamp_col);
+        pixels.setPixelColor(cur_minute + HOURS_ZERO, off_col);
+      }
+      pixels.show();
+      cur_hour = hour;
+      cur_minute = minute;
+    }
   }
 
   // TODO: set up the clock time if needed, ensure this only happens with _separate_ presses, not holds
