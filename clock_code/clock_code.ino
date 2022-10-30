@@ -18,7 +18,7 @@ enum mode {
   SLEEP,
   NUM_MODES
 };
- 
+
 enum setting {
   SET,
   HOURS,
@@ -57,14 +57,20 @@ enum setting {
 
 // TODO: look into interrupts for the buttons
 
-void disp_digit(int digit, int pin);
+void disp_time(unsigned long time);
+void disp_pixels(int hour, int minute, int disp_hour, int disp_minute);
 void disp_hour(int hour);
 void disp_minute(int minute);
+void disp_digit(int digit, int pin);
 unsigned long set_time();
+
+void process_buttons();
 
 unsigned long last_twelve;
 // clock setting variables
 int clock_setting = SET;
+int prev_set_hour = 0;
+int prev_set_minute = 0;
 int set_hour = 0;
 int set_minute = 0;
 bool previous_set = false;
@@ -73,6 +79,9 @@ int cur_hour = set_hour;
 int cur_minute = set_minute;
 int clock_mode = CLOCK;
 bool previous_mode = false;
+
+bool previous_up = false;
+bool previous_down = false;
 
 Adafruit_NeoPixel pixels(NUM_PIX, PIX_PIN, NEO_GRB + NEO_KHZ800);
 uint32_t clock_col = pixels.Color(255, 250, 185);
@@ -128,11 +137,62 @@ void loop() {
   /*
   analogRead(MIC_IN);
   */
+  
+  // TODO: buttons, set up the clock time if needed, ensure this only happens with _separate_ presses
+  bool mode = (digitalRead(MODE_PIN) == LOW);
+  if (mode && !previous_mode) {
+    // TODO: make the modes meaningful, go to sleep if it changes to sleep, otherwise, different lighting mode
+    clock_mode = (clock_mode + 1) % NUM_MODES;
+    
+  }
+  previous_mode = mode;
+
+  bool set = (digitalRead(SET_PIN) == LOW);
+  bool up = (digitalRead(UP_PIN) == LOW);
+  bool down = (digitalRead(DOWN_PIN) == LOW);
+  if (set && !previous_set) {
+    // set last_twelve, or the starting numbers
+    clock_setting = (clock_setting + 1) % NUM_SETTINGS;
+    if (clock_setting == SET) {
+      last_twelve = millis() - (set_hour * HOUR_SEC + set_minute * MINUTE_SEC) * 1000;
+    } else if (clock_setting == HOURS) {
+      set_hour = prev_set_hour = time / HOUR_SEC;
+      if (set_hour == 0) set_hour = 12;
+      set_minute = prev_set_minute = (time % HOUR_SEC) / MINUTE_SEC;
+    }
+  } else if (up && !previous_up) {
+    if (clock_setting == HOURS) {
+      set_hour++;
+    } else if (clock_setting == MINUTES) {
+      set_minute++;
+      // deal with hour roll over
+      set_hour += set_minute / 60;
+      set_minute = set_minute % 60;
+    }
+    set_hour = set_hour % 12;
+  } else if (down && !previous_down) {
+    if (clock_setting == HOURS) {
+      set_hour--;
+    } else if (clock_setting == MINUTES) {
+      set_minute--;
+      while (set_minute < 0) {
+        set_hour--;
+        set_minute += 60;
+      }
+    }
+    if (set_hour == 0) set_hour = 12;
+  }
+  previous_set = set;
+  previous_up = up;
+  previous_down = down;
+
   // TODO: neopixels
-  
-  // TODO: buttons
-  
   // TODO: this is ugly, put it in a function
+  disp_time(time);
+
+}
+
+void disp_time(unsigned long time) {
   if (clock_setting == HOURS) {
     Serial.println("Setting hour");
     Serial.print(set_hour);
@@ -140,6 +200,7 @@ void loop() {
     Serial.println(set_minute);
     disp_hour(set_hour);
     disp_minute(set_minute);
+    disp_pixels(set_hour, set_minute, prev_set_hour, prev_set_minute);
   } else if (clock_setting == MINUTES) {
     Serial.println("Setting minute");
     Serial.print(set_hour);
@@ -147,6 +208,7 @@ void loop() {
     Serial.println(set_minute);
     disp_hour(set_hour);
     disp_minute(set_minute);
+    disp_pixels(set_hour, set_minute, prev_set_hour, prev_set_minute);
   } else {
     int hour = time / HOUR_SEC;
     int minute = (time % HOUR_SEC) / MINUTE_SEC;
@@ -156,49 +218,33 @@ void loop() {
     Serial.println(minute);
     disp_hour(hour);
     disp_minute(minute);
-
-    if (minute != cur_minute) {
-      pixels.setPixelColor(minute + MINS_ZERO, lamp_col);
-      pixels.setPixelColor(cur_minute + MINS_ZERO, off_col);
-      // change the hour counter over if onto the next half hour
-      if ((cur_minute >= MINS_PIX / 2) ^ (minute >= MINS_PIX / 2)) {
-        pixels.setPixelColor(minute + HOURS_ZERO, lamp_col);
-        pixels.setPixelColor(cur_minute + HOURS_ZERO, off_col);
-      }
-      pixels.show();
-      cur_hour = hour;
-      cur_minute = minute;
-    }
+    disp_pixels(hour, minute, cur_hour, cur_minute);
   }
+}
 
-  // TODO: set up the clock time if needed, ensure this only happens with _separate_ presses, not holds
-  bool set = (digitalRead(SET_PIN) == LOW);
-  if (set && !previous_set) {
-    // set last_twelve, or the starting numbers
-    clock_setting = (clock_setting + 1) % NUM_SETTINGS;
-    if (clock_setting == SET) {
-      last_twelve = millis() - (set_hour * HOUR_SEC + set_minute * MINUTE_SEC) * 1000;
-    } else if (clock_setting == HOURS) {
-      set_hour = time / HOUR_SEC;
-      if (set_hour == 0) set_hour = 12;
-      set_minute = (time % HOUR_SEC) / MINUTE_SEC;
+void disp_pixels(int hour, int minute, int disp_hour, int disp_minute) {
+  if (minute != disp_minute) {
+    pixels.setPixelColor(minute + MINS_ZERO, lamp_col);
+    pixels.setPixelColor(disp_minute + MINS_ZERO, off_col);
+    // change the hour counter over if onto the next half hour
+    if ((disp_minute >= MINS_PIX / 2) ^ (minute >= MINS_PIX / 2)) {
+      pixels.setPixelColor(minute + HRS_ZERO, lamp_col);
+      pixels.setPixelColor(disp_minute + HRS_ZERO, off_col);
     }
+    pixels.show();
+    cur_hour = hour;
+    cur_minute = minute;
   }
-  previous_set = set;
+}
 
-  bool mode = (digitalRead(MODE_PIN) == LOW);
-  if (mode && !previous_mode) {
-    // TODO: make the modes meaningful, go to sleep if it changes to sleep, otherwise, different lighting mode
-    clock_mode = (clock_mode + 1) % NUM_MODES;
-    if (clock_setting == SET) {
-      last_twelve = millis() - (set_hour * HOUR_SEC + set_minute * MINUTE_SEC) * 1000;
-    } else if (clock_setting == HOURS) {
-      set_hour = time / HOUR_SEC;
-      set_minute = (time % HOUR_SEC) / MINUTE_SEC;
-    }
-  }
-  previous_mode = mode;
+void disp_hour(int hour) {
+  disp_digit(hour / 10, DIG1_PIN);
+  disp_digit(hour % 10, DIG2_PIN);
+}
 
+void disp_minute(int minute) {
+  disp_digit(minute / 10, DIG3_PIN);
+  disp_digit(minute % 10, DIG4_PIN);
 }
 
 void disp_digit(int digit, int pin) {
@@ -220,14 +266,4 @@ void disp_digit(int digit, int pin) {
   digitalWrite(pin, HIGH);
   delay(2);
   digitalWrite(pin, LOW);
-}
-
-void disp_hour(int hour) {
-  disp_digit(hour / 10, DIG1_PIN);
-  disp_digit(hour % 10, DIG2_PIN);
-}
-
-void disp_minute(int minute) {
-  disp_digit(minute / 10, DIG3_PIN);
-  disp_digit(minute % 10, DIG4_PIN);
 }
