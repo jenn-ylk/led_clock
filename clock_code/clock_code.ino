@@ -71,7 +71,7 @@ unsigned long last_twelve;
 int clock_setting = SET;
 int prev_set_hour = 0;
 int prev_set_minute = 0;
-int set_hour = 0;
+int set_hour = 12;
 int set_minute = 0;
 bool previous_set = false;
 
@@ -85,7 +85,7 @@ bool previous_down = false;
 
 Adafruit_NeoPixel pixels(NUM_PIX, PIX_PIN, NEO_GRB + NEO_KHZ800);
 uint32_t clock_col = pixels.Color(255, 250, 185);
-uint32_t lamp_col = pixels.Color(30, 0, 50);
+uint32_t lamp_col = pixels.Color(10, 0, 25);
 uint32_t off_col = pixels.Color(0, 0, 0);
 
 void setup() {
@@ -108,9 +108,10 @@ void setup() {
 
   // set up the neopixels
   pixels.begin();
-  for (int i = 0; i < HRS_PIX; i++) {
-    if (i != (cur_hour + (cur_minute >= (MINS_PIX / 2)))) {
-      pixels.setPixelColor(HRS_ZERO + i, lamp_col);
+  for (int i = 0; i < HRS_PIX / 2; i++) {
+    if (i != (cur_hour % 12)) {
+      pixels.setPixelColor(HRS_ZERO + i * 2, lamp_col);
+      pixels.setPixelColor(HRS_ZERO + i * 2 + 1, lamp_col);
       pixels.show();
     }
   }
@@ -127,12 +128,21 @@ void loop() {
   // TODO: if yo uuse an RTC, then this is not an issue!
   // TODO: deal with time going past 12 hours, and also with overflow of millis
   // in case the clock was idling for a while (this isn't totally foolproof if millis() overflows twice but will be alright)
+  // TODO: change all this last_twelve stuff to just use an RTC, that's the end goal anyway and this is more trouble than it's worth with number size limits
   unsigned long time = (millis() - last_twelve) / 1000;
   while (time / HOUR_SEC >= 12) {
+    // 1193
+    Serial.println(time / HOUR_SEC);
+    Serial.println("passed 12 hours");
     unsigned long add_hour = HOUR_SEC;
     unsigned long add_millis = add_hour * 1000 * 12;
     last_twelve += add_millis;
+    time = (millis() - last_twelve) / 1000;
   }
+
+  // neopixels and 7 seg
+  disp_time(time);
+
   // TODO: microphone
   /*
   analogRead(MIC_IN);
@@ -154,7 +164,16 @@ void loop() {
     // set last_twelve, or the starting numbers
     clock_setting = (clock_setting + 1) % NUM_SETTINGS;
     if (clock_setting == SET) {
+      Serial.println("setting time");
+      Serial.print("millis = ");
+      Serial.println(millis());
+      Serial.print("old last 12");
+      Serial.println(last_twelve);
       last_twelve = millis() - (set_hour * HOUR_SEC + set_minute * MINUTE_SEC) * 1000;
+      Serial.print("new last 12");
+      Serial.println(last_twelve);
+      cur_hour = set_hour;
+      cur_minute = set_minute;
     } else if (clock_setting == HOURS) {
       set_hour = prev_set_hour = time / HOUR_SEC;
       if (set_hour == 0) set_hour = 12;
@@ -162,60 +181,68 @@ void loop() {
     }
   } else if (up && !previous_up) {
     if (clock_setting == HOURS) {
+      prev_set_hour = set_hour;
       set_hour++;
     } else if (clock_setting == MINUTES) {
+      prev_set_minute = set_minute;
       set_minute++;
       // deal with hour roll over
+      if (set_minute >= 60) prev_set_hour = set_hour;
       set_hour += set_minute / 60;
       set_minute = set_minute % 60;
     }
     set_hour = set_hour % 12;
   } else if (down && !previous_down) {
     if (clock_setting == HOURS) {
+      prev_set_hour = set_hour;
       set_hour--;
     } else if (clock_setting == MINUTES) {
+      prev_set_minute = set_minute;
       set_minute--;
       while (set_minute < 0) {
+        prev_set_hour = set_hour;
         set_hour--;
         set_minute += 60;
       }
     }
-    if (set_hour == 0) set_hour = 12;
   }
+  if (set_hour == 0) set_hour = 12;
   previous_set = set;
   previous_up = up;
   previous_down = down;
-
-  // TODO: neopixels
-  // TODO: this is ugly, put it in a function
-  disp_time(time);
 
 }
 
 void disp_time(unsigned long time) {
   if (clock_setting == HOURS) {
+    /*
     Serial.println("Setting hour");
     Serial.print(set_hour);
     Serial.print(":");
     Serial.println(set_minute);
-    disp_hour(set_hour);
+    */
+    if ((millis() / 200) % 2) disp_hour(set_hour);
     disp_minute(set_minute);
     disp_pixels(set_hour, set_minute, prev_set_hour, prev_set_minute);
   } else if (clock_setting == MINUTES) {
+    /*
     Serial.println("Setting minute");
     Serial.print(set_hour);
     Serial.print(":");
     Serial.println(set_minute);
+    */
     disp_hour(set_hour);
-    disp_minute(set_minute);
+    if ((millis() / 200) % 2) disp_minute(set_minute);
     disp_pixels(set_hour, set_minute, prev_set_hour, prev_set_minute);
   } else {
     int hour = time / HOUR_SEC;
     int minute = (time % HOUR_SEC) / MINUTE_SEC;
     if (hour == 0) hour = 12;
+    /*
     Serial.print(hour);
     Serial.print(":");
     Serial.println(minute);
+    */
     disp_hour(hour);
     disp_minute(minute);
     disp_pixels(hour, minute, cur_hour, cur_minute);
@@ -224,13 +251,20 @@ void disp_time(unsigned long time) {
 
 void disp_pixels(int hour, int minute, int disp_hour, int disp_minute) {
   if (minute != disp_minute) {
-    pixels.setPixelColor(minute + MINS_ZERO, lamp_col);
-    pixels.setPixelColor(disp_minute + MINS_ZERO, off_col);
+    Serial.println(minute, DEC);
+    Serial.println(disp_minute, DEC);
+    pixels.setPixelColor(minute + MINS_ZERO, off_col);
+    pixels.setPixelColor(disp_minute + MINS_ZERO, lamp_col);
     // change the hour counter over if onto the next half hour
-    if ((disp_minute >= MINS_PIX / 2) ^ (minute >= MINS_PIX / 2)) {
-      pixels.setPixelColor(minute + HRS_ZERO, lamp_col);
-      pixels.setPixelColor(disp_minute + HRS_ZERO, off_col);
-    }
+    // if ((disp_minute >= MINS_PIX / 2) ^ (minute >= MINS_PIX / 2)) {
+  }
+  if (hour != disp_hour) {
+    pixels.setPixelColor((hour % 12) * 2 + HRS_ZERO, off_col);
+    pixels.setPixelColor((hour % 12) * 2 + 1 + HRS_ZERO, off_col);
+    pixels.setPixelColor((disp_hour % 12) * 2 + HRS_ZERO, lamp_col);
+    pixels.setPixelColor((disp_hour % 12) * 2 + 1 + HRS_ZERO, lamp_col);
+  }
+  if (hour != disp_hour || minute != disp_minute) {
     pixels.show();
     cur_hour = hour;
     cur_minute = minute;
