@@ -9,6 +9,7 @@
 //    - sound processing
 
 #include <Adafruit_NeoPixel.h>
+#include <RTClib.h>
 
 enum mode {
   CLOCK,
@@ -66,6 +67,8 @@ unsigned long set_time();
 
 void process_buttons();
 
+RTC_DS1307 rtc;
+DateTime now;
 unsigned long last_twelve;
 // clock setting variables
 int clock_setting = SET;
@@ -92,6 +95,15 @@ void setup() {
   Serial.begin(9600);
   // set the last twelve o'clock
   last_twelve = millis();
+  if (!rtc.begin()) {
+    Serial.println("Didn't find RTC");
+    Serial.flush();
+    while (1) delay(1000);
+  }
+  if (!rtc.isrunning()) {
+    // start at compile/push time
+    rtc.adjust(DateTime(F(__DATE__), F(__TIME__)));
+  }
   // set up 7 segment display pins (digits + bit shifter)
   pinMode(DATA_PIN, OUTPUT);
   pinMode(CLOCK_PIN, OUTPUT);
@@ -129,6 +141,7 @@ void loop() {
   // TODO: deal with time going past 12 hours, and also with overflow of millis
   // in case the clock was idling for a while (this isn't totally foolproof if millis() overflows twice but will be alright)
   // TODO: change all this last_twelve stuff to just use an RTC, that's the end goal anyway and this is more trouble than it's worth with number size limits
+  now = rtc.now();
   unsigned long time = (millis() - last_twelve) / 1000;
   while (time / HOUR_SEC >= 12) {
     // 1193
@@ -169,6 +182,7 @@ void loop() {
       Serial.println(millis());
       Serial.print("old last 12");
       Serial.println(last_twelve);
+      rtc.adjust(DateTime(now.year(), now.month(), now.day(), set_hour, set_minute, 0));
       last_twelve = millis() - (set_hour * HOUR_SEC + set_minute * MINUTE_SEC) * 1000;
       Serial.print("new last 12");
       Serial.println(last_twelve);
@@ -235,8 +249,9 @@ void disp_time(unsigned long time) {
     if ((millis() / 200) % 2) disp_minute(set_minute);
     disp_pixels(set_hour, set_minute, prev_set_hour, prev_set_minute);
   } else {
-    int hour = time / HOUR_SEC;
-    int minute = (time % HOUR_SEC) / MINUTE_SEC;
+    // TODO: should there be a pm marker?
+    int hour = (int) now.hour() % 12; // time / HOUR_SEC;
+    int minute = (int) now.minute(); // (time % HOUR_SEC) / MINUTE_SEC;
     if (hour == 0) hour = 12;
     /*
     Serial.print(hour);
