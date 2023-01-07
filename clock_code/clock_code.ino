@@ -10,12 +10,12 @@
 
 #include <Adafruit_NeoPixel.h>
 #include <RTClib.h>
+#include <avr/sleep.h>
 
 enum mode {
   CLOCK,
   LAMP,
   SPECTRUM,
-  // SOUND,
   SLEEP,
   NUM_MODES
 };
@@ -32,18 +32,18 @@ enum setting {
 #define CLOCK_PIN 9
 #define LATCH_PIN 10
 // - digit pins
-#define DIG1_PIN  2
-#define DIG2_PIN  3
-#define DIG3_PIN  4
-#define DIG4_PIN  5
+#define DIG1_PIN  3
+#define DIG2_PIN  4
+#define DIG3_PIN  5
+#define DIG4_PIN  6
 // - button pins
-#define MODE_PIN  0
+#define MODE_PIN  2
 #define SET_PIN   A1
 #define UP_PIN    A2
 #define DOWN_PIN  A3
 
 // - neopixels
-#define PIX_PIN   6 
+#define PIX_PIN   7 
 #define NUM_PIX   84
 #define HRS_PIX   24
 #define MINS_PIX  60
@@ -58,18 +58,17 @@ enum setting {
 
 // TODO: look into interrupts for the buttons
 
-void disp_time(unsigned long time);
+void disp_time();
 void disp_pixels(int hour, int minute, int disp_hour, int disp_minute);
 void disp_hour(int hour);
 void disp_minute(int minute);
 void disp_digit(int digit, int pin);
 unsigned long set_time();
 
-void process_buttons();
+void switch_wake();
 
 RTC_DS1307 rtc;
 DateTime now;
-unsigned long last_twelve;
 // clock setting variables
 int clock_setting = SET;
 int prev_set_hour = 0;
@@ -85,16 +84,17 @@ bool previous_mode = false;
 
 bool previous_up = false;
 bool previous_down = false;
+bool switched = false;
 
 Adafruit_NeoPixel pixels(NUM_PIX, PIX_PIN, NEO_GRB + NEO_KHZ800);
-uint32_t clock_col = pixels.Color(255, 250, 185);
-uint32_t lamp_col = pixels.Color(10, 0, 25);
+
+uint32_t clock_col = pixels.Color(10, 0, 25);
+uint32_t lamp_col = pixels.Color(200, 150, 60);
 uint32_t off_col = pixels.Color(0, 0, 0);
 
 void setup() {
   Serial.begin(9600);
-  // set the last twelve o'clock
-  last_twelve = millis();
+  
   if (!rtc.begin()) {
     Serial.println("Didn't find RTC");
     Serial.flush();
@@ -114,6 +114,7 @@ void setup() {
   pinMode(DIG4_PIN, OUTPUT);
   // button setup (pullup so a "low" means the button is pressed)
   pinMode(MODE_PIN, INPUT_PULLUP);
+  attachInterrupt(digitalPinToInterrupt(MODE_PIN), switch_wake, FALLING);
   pinMode(SET_PIN, INPUT_PULLUP);
   pinMode(UP_PIN, INPUT_PULLUP);
   pinMode(DOWN_PIN, INPUT_PULLUP);
@@ -122,14 +123,27 @@ void setup() {
   pixels.begin();
   for (int i = 0; i < HRS_PIX / 2; i++) {
     if (i != (cur_hour % 12)) {
-      pixels.setPixelColor(HRS_ZERO + i * 2, lamp_col);
-      pixels.setPixelColor(HRS_ZERO + i * 2 + 1, lamp_col);
+      if (clock_mode == CLOCK) {
+        pixels.setPixelColor(HRS_ZERO + i * 2, clock_col);
+        pixels.setPixelColor(HRS_ZERO + i * 2 + 1, clock_col);
+      } else if (clock_mode == LAMP) {
+        pixels.setPixelColor(HRS_ZERO + i * 2, lamp_col);
+        pixels.setPixelColor(HRS_ZERO + i * 2 + 1, lamp_col);
+      } else if (clock_mode == SPECTRUM) {
+        Serial.print("aaa");
+      }
       pixels.show();
     }
   }
   for (int i = 0; i < MINS_PIX; i++) {
     if (i != cur_minute) {
-      pixels.setPixelColor(MINS_ZERO + i, lamp_col);
+      if (clock_mode == CLOCK) {
+        pixels.setPixelColor(MINS_ZERO + i, clock_col);
+      } else if (clock_mode == LAMP) {
+        pixels.setPixelColor(MINS_ZERO + i, lamp_col);
+      } else if (clock_mode == SPECTRUM) {
+        Serial.print("aaa");
+      }
       pixels.show();
     }
   }
@@ -137,38 +151,9 @@ void setup() {
 }
 
 void loop() {
-  // TODO: if yo uuse an RTC, then this is not an issue!
-  // TODO: deal with time going past 12 hours, and also with overflow of millis
-  // in case the clock was idling for a while (this isn't totally foolproof if millis() overflows twice but will be alright)
-  // TODO: change all this last_twelve stuff to just use an RTC, that's the end goal anyway and this is more trouble than it's worth with number size limits
   now = rtc.now();
-  unsigned long time = (millis() - last_twelve) / 1000;
-  while (time / HOUR_SEC >= 12) {
-    // 1193
-    Serial.println(time / HOUR_SEC);
-    Serial.println("passed 12 hours");
-    unsigned long add_hour = HOUR_SEC;
-    unsigned long add_millis = add_hour * 1000 * 12;
-    last_twelve += add_millis;
-    time = (millis() - last_twelve) / 1000;
-  }
-
   // neopixels and 7 seg
-  disp_time(time);
-
-  // TODO: microphone
-  /*
-  analogRead(MIC_IN);
-  */
-  
-  // TODO: buttons, set up the clock time if needed, ensure this only happens with _separate_ presses
-  bool mode = (digitalRead(MODE_PIN) == LOW);
-  if (mode && !previous_mode) {
-    // TODO: make the modes meaningful, go to sleep if it changes to sleep, otherwise, different lighting mode
-    clock_mode = (clock_mode + 1) % NUM_MODES;
-    
-  }
-  previous_mode = mode;
+  disp_time();
 
   bool set = (digitalRead(SET_PIN) == LOW);
   bool up = (digitalRead(UP_PIN) == LOW);
@@ -177,21 +162,14 @@ void loop() {
     // set last_twelve, or the starting numbers
     clock_setting = (clock_setting + 1) % NUM_SETTINGS;
     if (clock_setting == SET) {
-      Serial.println("setting time");
-      Serial.print("millis = ");
-      Serial.println(millis());
-      Serial.print("old last 12");
-      Serial.println(last_twelve);
+      // Serial.println("setting time");
       rtc.adjust(DateTime(now.year(), now.month(), now.day(), set_hour, set_minute, 0));
-      last_twelve = millis() - (set_hour * HOUR_SEC + set_minute * MINUTE_SEC) * 1000;
-      Serial.print("new last 12");
-      Serial.println(last_twelve);
       cur_hour = set_hour;
       cur_minute = set_minute;
     } else if (clock_setting == HOURS) {
-      set_hour = prev_set_hour = time / HOUR_SEC;
+      set_hour = prev_set_hour = now.hour();
       if (set_hour == 0) set_hour = 12;
-      set_minute = prev_set_minute = (time % HOUR_SEC) / MINUTE_SEC;
+      set_minute = prev_set_minute = now.minute();
     }
   } else if (up && !previous_up) {
     if (clock_setting == HOURS) {
@@ -227,7 +205,7 @@ void loop() {
 
 }
 
-void disp_time(unsigned long time) {
+void disp_time() {
   if (clock_setting == HOURS) {
     /*
     Serial.println("Setting hour");
@@ -250,8 +228,8 @@ void disp_time(unsigned long time) {
     disp_pixels(set_hour, set_minute, prev_set_hour, prev_set_minute);
   } else {
     // TODO: should there be a pm marker?
-    int hour = (int) now.hour() % 12; // time / HOUR_SEC;
-    int minute = (int) now.minute(); // (time % HOUR_SEC) / MINUTE_SEC;
+    int hour = (int) now.hour() % 12;
+    int minute = (int) now.minute();
     if (hour == 0) hour = 12;
     /*
     Serial.print(hour);
@@ -265,25 +243,44 @@ void disp_time(unsigned long time) {
 }
 
 void disp_pixels(int hour, int minute, int disp_hour, int disp_minute) {
-  if (minute != disp_minute) {
-    Serial.println(minute, DEC);
-    Serial.println(disp_minute, DEC);
-    pixels.setPixelColor(minute + MINS_ZERO, off_col);
-    pixels.setPixelColor(disp_minute + MINS_ZERO, lamp_col);
-    // change the hour counter over if onto the next half hour
-    // if ((disp_minute >= MINS_PIX / 2) ^ (minute >= MINS_PIX / 2)) {
+  if (switched) {}
+  else {
+    if (minute != disp_minute) {
+      // Serial.println(minute, DEC);
+      // Serial.println(disp_minute, DEC);
+      pixels.setPixelColor(minute + MINS_ZERO, off_col);
+      if (clock_mode == CLOCK) {
+        pixels.setPixelColor(disp_minute + MINS_ZERO, clock_col);
+      } else if (clock_mode == LAMP) {
+        pixels.setPixelColor(disp_minute + MINS_ZERO, lamp_col);
+      } else if (clock_mode == SPECTRUM) {
+        Serial.print("aaa");
+      }
+      // change the hour counter over if onto the next half hour
+      // if ((disp_minute >= MINS_PIX / 2) ^ (minute >= MINS_PIX / 2)) {
+    }
+    if (hour != disp_hour) {
+      pixels.setPixelColor((hour % 12) * 2 + HRS_ZERO, off_col);
+      pixels.setPixelColor((hour % 12) * 2 + 1 + HRS_ZERO, off_col);
+      if (clock_mode == CLOCK) {
+        pixels.setPixelColor((disp_hour % 12) * 2 + HRS_ZERO, clock_col);
+        pixels.setPixelColor((disp_hour % 12) * 2 + 1 + HRS_ZERO, clock_col);
+      } else if (clock_mode == LAMP) {
+        pixels.setPixelColor((disp_hour % 12) * 2 + HRS_ZERO, lamp_col);
+        pixels.setPixelColor((disp_hour % 12) * 2 + 1 + HRS_ZERO, lamp_col);
+      } else if (clock_mode == SPECTRUM) {
+        Serial.print("aaa");
+      }
+    }
   }
-  if (hour != disp_hour) {
-    pixels.setPixelColor((hour % 12) * 2 + HRS_ZERO, off_col);
-    pixels.setPixelColor((hour % 12) * 2 + 1 + HRS_ZERO, off_col);
-    pixels.setPixelColor((disp_hour % 12) * 2 + HRS_ZERO, lamp_col);
-    pixels.setPixelColor((disp_hour % 12) * 2 + 1 + HRS_ZERO, lamp_col);
-  }
+  
   if (hour != disp_hour || minute != disp_minute) {
     pixels.show();
     cur_hour = hour;
     cur_minute = minute;
   }
+
+  switched = false;
 }
 
 void disp_hour(int hour) {
@@ -315,4 +312,19 @@ void disp_digit(int digit, int pin) {
   digitalWrite(pin, HIGH);
   delay(2);
   digitalWrite(pin, LOW);
+}
+
+void switch_wake() {
+  // TODO:
+  clock_mode = (clock_mode + 1) % NUM_MODES;
+  Serial.print("Clock mode:");
+  Serial.println(clock_mode);
+  // if (clock_mode == SLEEP) {
+  //   sleep_enable();
+  //   set_sleep_mode(SLEEP_MODE_PWR_DOWN);
+  //   sleep_cpu();
+  // } else {
+  //   sleep_disable();
+  //   switched = true;
+  // }
 }
