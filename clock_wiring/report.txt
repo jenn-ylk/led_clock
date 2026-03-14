@@ -1,0 +1,373 @@
+Info: Processing symbol 'C1:Capacitor_SMD:C_1206_3216Metric_Pad1.33x1.80mm_HandSolder'.
+Info: Processing symbol 'J2:Connector_Pin:Pin_D1.0mm_L10.0mm_LooseFit'.
+Info: Processing symbol 'R9:Resistor_SMD:R_1206_3216Metric_Pad1.30x1.75mm_HandSolder'.
+Info: Processing symbol 'R3:Resistor_SMD:R_1206_3216Metric_Pad1.30x1.75mm_HandSolder'.
+Info: Processing symbol 'J4:Connector_Pin:Pin_D1.0mm_L10.0mm_LooseFit'.
+Info: Processing symbol 'R5:Resistor_SMD:R_1206_3216Metric_Pad1.30x1.75mm_HandSolder'.
+Info: Processing symbol 'R8:Resistor_SMD:R_1206_3216Metric_Pad1.30x1.75mm_HandSolder'.
+Info: Processing symbol 'R4:Resistor_SMD:R_1206_3216Metric_Pad1.30x1.75mm_HandSolder'.
+Info: Processing symbol 'C4:Capacitor_SMD:C_1206_3216Metric_Pad1.33x1.80mm_HandSolder'.
+Info: Processing symbol 'C6:Capacitor_SMD:C_1206_3216Metric_Pad1.33x1.80mm_HandSolder'.
+Info: Processing symbol 'C2:Capacitor_SMD:C_1206_3216Metric_Pad1.33x1.80mm_HandSolder'.
+Info: Processing symbol 'J1:Connector_Pin:Pin_D1.0mm_L10.0mm_LooseFit'.
+Info: Processing symbol 'J3:Connector_Pin:Pin_D1.0mm_L10.0mm_LooseFit'.
+Info: Processing symbol 'R6:Resistor_SMD:R_1206_3216Metric_Pad1.30x1.75mm_HandSolder'.
+Info: Processing symbol 'R7:Resistor_SMD:R_1206_3216Metric_Pad1.30x1.75mm_HandSolder'.
+Info: Processing symbol 'R1:Resistor_SMD:R_1206_3216Metric_Pad1.30x1.75mm_HandSolder'.
+Info: Processing symbol 'R2:Resistor_SMD:R_1206_3216Metric_Pad1.30x1.75mm_HandSolder'.
+Info: Processing symbol 'J5:Connector_Pin:Pin_D1.0mm_L10.0mm_LooseFit'.
+Info: Processing symbol 'C5:Capacitor_SMD:C_1206_3216Metric_Pad1.33x1.80mm_HandSolder'.
+Info: Processing symbol 'C3:Capacitor_SMD:C_1206_3216Metric_Pad1.33x1.80mm_HandSolder'.
+Info: Processing symbol 'C7:Capacitor_SMD:C_1206_3216Metric_Pad1.33x1.80mm_HandSolder'.
+Info: Processing symbol 'R10:Resistor_SMD:R_1206_3216Metric_Pad1.30x1.75mm_HandSolder'.
+Info: Processing symbol 'R11:Resistor_SMD:R_1206_3216Metric_Pad1.30x1.75mm_HandSolder'.
+Info: Processing symbol 'R12:Resistor_SMD:R_1206_3216Metric_Pad1.30x1.75mm_HandSolder'.
+Info: Processing symbol 'SW1:Button_Switch_THT:SW_Tactile_Straight_KSA0Axx1LFTR'.
+Info: Processing symbol 'SW2:Button_Switch_THT:SW_Tactile_Straight_KSA0Axx1LFTR'.
+Info: Processing symbol 'SW3:Button_Switch_THT:SW_Tactile_Straight_KSA0Axx1LFTR'.
+Info: Processing symbol 'SW4:Button_Switch_THT:SW_Tactile_Straight_KSA0Axx1LFTR'.
+Info: Processing symbol 'U1:Package_DIP:DIP-28_W7.62mm_Socket'.
+Info: Processing symbol 'U2:Package_DIP:DIP-16_W7.62mm'.
+Info: Processing symbol 'U3:clock:COM-09481'.
+Info: Processing symbol 'U4:Connector_PinHeader_2.00mm:PinHeader_2x03_P2.00mm_Vertical'.
+Info: Processing symbol 'Y1:Crystal:Crystal_AT310_D3.0mm_L10.0mm_Horizontal'.
+Updated C2 symbol association from  to /8aa2d264-42bb-4811-aa9c-172e3f428464.
+Updated C2 properties.
+Add net SET.
+Connected C2 pin 1 to SET.
+Connected C2 pin 2 to PXL_GND.
+Added C3 (footprint 'Capacitor_SMD:C_1206_3216Metric_Pad1.33x1.80mm_HandSolder').
+Changed REF** reference designator to C3.
+Changed C3 value from C_1206_3216Metric_Pad1.33x1.80mm_HandSolder to 1u.
+Updated C3 symbol association from  to /a238e715-4a0c-4a1e-b3ac-ad8aff7edbf2.
+Updated C3 properties.
+Add net UP.
+Connected C3 pin 1 to UP.
+Connected C3 pin 2 to PXL_GND.
+Added C4 (footprint 'Capacitor_SMD:C_1206_3216Metric_Pad1.33x1.80mm_HandSolder').
+Changed REF** reference designator to C4.
+Changed C4 value from C_1206_3216Metric_Pad1.33x1.80mm_HandSolder to 1u.
+Updated C4 symbol association from  to /63febb89-742a-4299-ad4e-57530b2a13bd.
+Updated C4 properties.
+Add net DOWN.
+Connected C4 pin 1 to DOWN.
+Connected C4 pin 2 to PXL_GND.
+Added C5 (footprint 'Capacitor_SMD:C_1206_3216Metric_Pad1.33x1.80mm_HandSolder').
+Changed REF** reference designator to C5.
+Changed C5 value from C_1206_3216Metric_Pad1.33x1.80mm_HandSolder to 1m.
+Updated C5 symbol association from  to /858bcbf1-4c0f-4e2d-9091-ff175bd9287f.
+Updated C5 properties.
+Add net PXL_VCC.
+Connected C5 pin 1 to PXL_VCC.
+Connected C5 pin 2 to PXL_GND.
+Added C6 (footprint 'Capacitor_SMD:C_1206_3216Metric_Pad1.33x1.80mm_HandSolder').
+Changed REF** reference designator to C6.
+Changed C6 value from C_1206_3216Metric_Pad1.33x1.80mm_HandSolder to 1m.
+Updated C6 symbol association from  to /ece52971-35ff-4eed-ace9-f209877f3342.
+Updated C6 properties.
+Connected C6 pin 1 to PXL_VCC.
+Connected C6 pin 2 to PXL_GND.
+Added C7 (footprint 'Capacitor_SMD:C_1206_3216Metric_Pad1.33x1.80mm_HandSolder').
+Changed REF** reference designator to C7.
+Changed C7 value from C_1206_3216Metric_Pad1.33x1.80mm_HandSolder to 1m.
+Updated C7 symbol association from  to /7e63e8f1-e7b2-46c7-81bb-7c9e86d3328c.
+Updated C7 properties.
+Connected C7 pin 1 to PXL_VCC.
+Connected C7 pin 2 to PXL_GND.
+Added J1 (footprint 'Connector_Pin:Pin_D1.0mm_L10.0mm_LooseFit').
+Changed REF** reference designator to J1.
+Changed J1 value from Pin_D1.0mm_L10.0mm_LooseFit to Conn_01x01_Female.
+Updated J1 symbol association from  to /3dd50d09-95c5-49e1-a60e-2c84ac6d0e3a.
+Updated J1 properties.
+Connected J1 pin 1 to PXL_VCC.
+Added J2 (footprint 'Connector_Pin:Pin_D1.0mm_L10.0mm_LooseFit').
+Changed REF** reference designator to J2.
+Changed J2 value from Pin_D1.0mm_L10.0mm_LooseFit to Conn_01x01_Female.
+Updated J2 symbol association from  to /a8fed8dd-26f2-480d-901a-4a36f037465b.
+Updated J2 properties.
+Connected J2 pin 1 to PXL_GND.
+Added J3 (footprint 'Connector_Pin:Pin_D1.0mm_L10.0mm_LooseFit').
+Changed REF** reference designator to J3.
+Changed J3 value from Pin_D1.0mm_L10.0mm_LooseFit to Conn_01x01_Female.
+Updated J3 symbol association from  to /d361e2d0-7a34-48ac-8439-07951db7e375.
+Updated J3 properties.
+Add net PXL_OUT.
+Connected J3 pin 1 to PXL_OUT.
+Added J4 (footprint 'Connector_Pin:Pin_D1.0mm_L10.0mm_LooseFit').
+Changed REF** reference designator to J4.
+Changed J4 value from Pin_D1.0mm_L10.0mm_LooseFit to Conn_01x01_Female.
+Updated J4 symbol association from  to /9ba099d8-6df9-4728-a41d-ba86ba478f46.
+Updated J4 properties.
+Add net RX.
+Connected J4 pin 1 to RX.
+Added J5 (footprint 'Connector_Pin:Pin_D1.0mm_L10.0mm_LooseFit').
+Changed REF** reference designator to J5.
+Changed J5 value from Pin_D1.0mm_L10.0mm_LooseFit to Conn_01x01_Female.
+Updated J5 symbol association from  to /210bbed8-09d3-4bf1-ab6b-d465a81573d2.
+Updated J5 properties.
+Add net TX.
+Connected J5 pin 1 to TX.
+Added R1 (footprint 'Resistor_SMD:R_1206_3216Metric_Pad1.30x1.75mm_HandSolder').
+Changed REF** reference designator to R1.
+Changed R1 value from R_1206_3216Metric_Pad1.30x1.75mm_HandSolder to 1k.
+Updated R1 symbol association from  to /0e6ef701-479a-4e9d-880f-44f50f770d2a.
+Updated R1 properties.
+Add net Net-(R1-Pad1).
+Connected R1 pin 1 to Net-(R1-Pad1).
+Connected R1 pin 2 to MODE.
+Added R2 (footprint 'Resistor_SMD:R_1206_3216Metric_Pad1.30x1.75mm_HandSolder').
+Changed REF** reference designator to R2.
+Changed R2 value from R_1206_3216Metric_Pad1.30x1.75mm_HandSolder to 1k.
+Updated R2 symbol association from  to /a2e21b1e-5bf4-4a05-9a33-3f60180c4583.
+Updated R2 properties.
+Add net Net-(R2-Pad1).
+Connected R2 pin 1 to Net-(R2-Pad1).
+Connected R2 pin 2 to SET.
+Added R3 (footprint 'Resistor_SMD:R_1206_3216Metric_Pad1.30x1.75mm_HandSolder').
+Changed REF** reference designator to R3.
+Changed R3 value from R_1206_3216Metric_Pad1.30x1.75mm_HandSolder to 1k.
+Updated R3 symbol association from  to /e84f6385-2135-4c30-a4ca-90a4c4bcf67f.
+Updated R3 properties.
+Add net Net-(R3-Pad1).
+Connected R3 pin 1 to Net-(R3-Pad1).
+Connected R3 pin 2 to UP.
+Added R4 (footprint 'Resistor_SMD:R_1206_3216Metric_Pad1.30x1.75mm_HandSolder').
+Changed REF** reference designator to R4.
+Changed R4 value from R_1206_3216Metric_Pad1.30x1.75mm_HandSolder to 1k.
+Updated R4 symbol association from  to /62488695-7e85-4901-b17a-1c95b8648179.
+Updated R4 properties.
+Add net Net-(R4-Pad1).
+Connected R4 pin 1 to Net-(R4-Pad1).
+Connected R4 pin 2 to DOWN.
+Added R5 (footprint 'Resistor_SMD:R_1206_3216Metric_Pad1.30x1.75mm_HandSolder').
+Changed REF** reference designator to R5.
+Changed R5 value from R_1206_3216Metric_Pad1.30x1.75mm_HandSolder to 1k.
+Updated R5 symbol association from  to /6dc0e71f-d007-40e5-bdd3-8dab0128b7c2.
+Updated R5 properties.
+Add net Net-(R5-Pad1).
+Connected R5 pin 1 to Net-(R5-Pad1).
+Add net SEG_A.
+Connected R5 pin 2 to SEG_A.
+Added R6 (footprint 'Resistor_SMD:R_1206_3216Metric_Pad1.30x1.75mm_HandSolder').
+Changed REF** reference designator to R6.
+Changed R6 value from R_1206_3216Metric_Pad1.30x1.75mm_HandSolder to 1k.
+Updated R6 symbol association from  to /28343789-bc68-48d6-b903-c14b106b451b.
+Updated R6 properties.
+Add net Net-(R6-Pad1).
+Connected R6 pin 1 to Net-(R6-Pad1).
+Add net SEG_B.
+Connected R6 pin 2 to SEG_B.
+Added R7 (footprint 'Resistor_SMD:R_1206_3216Metric_Pad1.30x1.75mm_HandSolder').
+Changed REF** reference designator to R7.
+Changed R7 value from R_1206_3216Metric_Pad1.30x1.75mm_HandSolder to 1k.
+Updated R7 symbol association from  to /6351276e-c131-4dc5-b709-7b125e1e3a0e.
+Updated R7 properties.
+Add net Net-(R7-Pad1).
+Connected R7 pin 1 to Net-(R7-Pad1).
+Add net SEG_C.
+Connected R7 pin 2 to SEG_C.
+Added R8 (footprint 'Resistor_SMD:R_1206_3216Metric_Pad1.30x1.75mm_HandSolder').
+Changed REF** reference designator to R8.
+Changed R8 value from R_1206_3216Metric_Pad1.30x1.75mm_HandSolder to 1k.
+Updated R8 symbol association from  to /b630ddc5-c55e-43a9-a0e7-fa8095bbe173.
+Updated R8 properties.
+Add net Net-(R8-Pad1).
+Connected R8 pin 1 to Net-(R8-Pad1).
+Add net SEG_D.
+Connected R8 pin 2 to SEG_D.
+Added R9 (footprint 'Resistor_SMD:R_1206_3216Metric_Pad1.30x1.75mm_HandSolder').
+Changed REF** reference designator to R9.
+Changed R9 value from R_1206_3216Metric_Pad1.30x1.75mm_HandSolder to 1k.
+Updated R9 symbol association from  to /0f98869b-e732-4420-89ea-f3b825e1f6a6.
+Updated R9 properties.
+Add net Net-(R9-Pad1).
+Connected R9 pin 1 to Net-(R9-Pad1).
+Add net SEG_E.
+Connected R9 pin 2 to SEG_E.
+Added C1 (footprint 'Capacitor_SMD:C_1206_3216Metric_Pad1.33x1.80mm_HandSolder').
+Added R10 (footprint 'Resistor_SMD:R_1206_3216Metric_Pad1.30x1.75mm_HandSolder').
+Changed REF** reference designator to R10.
+Changed R10 value from R_1206_3216Metric_Pad1.30x1.75mm_HandSolder to 1k.
+Updated R10 symbol association from  to /7da1b7b6-21fa-4be7-b116-ee0065405401.
+Updated R10 properties.
+Add net Net-(R10-Pad1).
+Connected R10 pin 1 to Net-(R10-Pad1).
+Add net SEG_F.
+Connected R10 pin 2 to SEG_F.
+Changed REF** reference designator to C1.
+Added R11 (footprint 'Resistor_SMD:R_1206_3216Metric_Pad1.30x1.75mm_HandSolder').
+Changed REF** reference designator to R11.
+Changed R11 value from R_1206_3216Metric_Pad1.30x1.75mm_HandSolder to 1k.
+Updated R11 symbol association from  to /2cb01644-87ad-444b-8e7d-f469f438d28d.
+Updated R11 properties.
+Add net Net-(R11-Pad1).
+Connected R11 pin 1 to Net-(R11-Pad1).
+Add net SEG_G.
+Connected R11 pin 2 to SEG_G.
+Changed C1 value from C_1206_3216Metric_Pad1.33x1.80mm_HandSolder to 1u.
+Added R12 (footprint 'Resistor_SMD:R_1206_3216Metric_Pad1.30x1.75mm_HandSolder').
+Changed REF** reference designator to R12.
+Changed R12 value from R_1206_3216Metric_Pad1.30x1.75mm_HandSolder to 1k.
+Updated R12 symbol association from  to /f7873034-83a1-404f-923e-9a5c8df5d262.
+Updated R12 properties.
+Add net Net-(R12-Pad1).
+Connected R12 pin 1 to Net-(R12-Pad1).
+Add net COLON.
+Connected R12 pin 2 to COLON.
+Updated C1 symbol association from  to /2ea64b22-eb50-4281-b6fb-34decfcf7c12.
+Added SW1 (footprint 'Button_Switch_THT:SW_Tactile_Straight_KSA0Axx1LFTR').
+Changed REF** reference designator to SW1.
+Changed SW1 value from SW_Tactile_Straight_KSA0Axx1LFTR to SW_Push.
+Updated SW1 symbol association from  to /65450cb2-84a4-4591-b0b0-816bff153040.
+Updated SW1 properties.
+Connected SW1 pin 1 to PXL_GND.
+Connected SW1 pin 1 to PXL_GND.
+Connected SW1 pin 2 to Net-(R1-Pad1).
+Connected SW1 pin 2 to Net-(R1-Pad1).
+Updated C1 properties.
+Added SW2 (footprint 'Button_Switch_THT:SW_Tactile_Straight_KSA0Axx1LFTR').
+Changed REF** reference designator to SW2.
+Changed SW2 value from SW_Tactile_Straight_KSA0Axx1LFTR to SW_Push.
+Updated SW2 symbol association from  to /420decee-1864-48f5-b5fb-2e9daf8953ed.
+Updated SW2 properties.
+Connected SW2 pin 1 to PXL_GND.
+Connected SW2 pin 1 to PXL_GND.
+Connected SW2 pin 2 to Net-(R2-Pad1).
+Connected SW2 pin 2 to Net-(R2-Pad1).
+Add net MODE.
+Added SW3 (footprint 'Button_Switch_THT:SW_Tactile_Straight_KSA0Axx1LFTR').
+Changed REF** reference designator to SW3.
+Changed SW3 value from SW_Tactile_Straight_KSA0Axx1LFTR to SW_Push.
+Updated SW3 symbol association from  to /d6a46a28-bc69-4c1f-9ccc-1ac161ba1a64.
+Updated SW3 properties.
+Connected SW3 pin 1 to PXL_GND.
+Connected SW3 pin 1 to PXL_GND.
+Connected SW3 pin 2 to Net-(R3-Pad1).
+Connected SW3 pin 2 to Net-(R3-Pad1).
+Connected C1 pin 1 to MODE.
+Added SW4 (footprint 'Button_Switch_THT:SW_Tactile_Straight_KSA0Axx1LFTR').
+Changed REF** reference designator to SW4.
+Changed SW4 value from SW_Tactile_Straight_KSA0Axx1LFTR to SW_Push.
+Updated SW4 symbol association from  to /1cc01d16-bbcd-44ff-b222-72981b18511c.
+Updated SW4 properties.
+Connected SW4 pin 1 to PXL_GND.
+Connected SW4 pin 1 to PXL_GND.
+Connected SW4 pin 2 to Net-(R4-Pad1).
+Connected SW4 pin 2 to Net-(R4-Pad1).
+Add net PXL_GND.
+Added U1 (footprint 'Package_DIP:DIP-28_W7.62mm_Socket').
+Changed REF** reference designator to U1.
+Changed U1 value from DIP-28_W7.62mm_Socket to ATmega328-P.
+Updated U1 symbol association from  to /cf8c588c-ad21-4a03-826a-498111a242b9.
+Updated U1 properties.
+Add net RST.
+Connected U1 pin 1 to RST.
+Connected U1 pin 2 to RX.
+Connected U1 pin 3 to TX.
+Connected U1 pin 4 to MODE.
+Add net DIG1.
+Connected U1 pin 5 to DIG1.
+Add net DIG2.
+Connected U1 pin 6 to DIG2.
+Connected U1 pin 7 to PXL_VCC.
+Connected U1 pin 8 to PXL_GND.
+Add net Net-(U1-Pad9).
+Connected U1 pin 9 to Net-(U1-Pad9).
+Add net Net-(U1-Pad10).
+Connected U1 pin 10 to Net-(U1-Pad10).
+Add net DIG3.
+Connected U1 pin 11 to DIG3.
+Add net DIG4.
+Connected U1 pin 12 to DIG4.
+Connected U1 pin 13 to PXL_OUT.
+Add net BIT_OUT.
+Connected U1 pin 14 to BIT_OUT.
+Add net CLK_OUT.
+Connected U1 pin 15 to CLK_OUT.
+Add net LTCH_OUT.
+Connected U1 pin 16 to LTCH_OUT.
+Add net MOSI.
+Connected U1 pin 17 to MOSI.
+Add net MISO.
+Connected U1 pin 18 to MISO.
+Add net SCK.
+Connected U1 pin 19 to SCK.
+Connected U1 pin 20 to PXL_VCC.
+Connected U1 pin 21 to PXL_VCC.
+Connected U1 pin 22 to PXL_GND.
+Add net unconnected-(U1-Pad23).
+Connected U1 pin 23 to unconnected-(U1-Pad23).
+Connected U1 pin 24 to SET.
+Connected U1 pin 25 to UP.
+Connected U1 pin 26 to DOWN.
+Add net unconnected-(U1-Pad27).
+Connected U1 pin 27 to unconnected-(U1-Pad27).
+Add net unconnected-(U1-Pad28).
+Connected U1 pin 28 to unconnected-(U1-Pad28).
+Connected C1 pin 2 to PXL_GND.
+Added U2 (footprint 'Package_DIP:DIP-16_W7.62mm').
+Changed REF** reference designator to U2.
+Changed U2 value from DIP-16_W7.62mm to 74HC595.
+Updated U2 symbol association from  to /aa010797-6efe-4a16-9b20-7c5bf49072e0.
+Updated U2 properties.
+Connected U2 pin 1 to Net-(R6-Pad1).
+Connected U2 pin 2 to Net-(R7-Pad1).
+Connected U2 pin 3 to Net-(R8-Pad1).
+Connected U2 pin 4 to Net-(R9-Pad1).
+Connected U2 pin 5 to Net-(R10-Pad1).
+Connected U2 pin 6 to Net-(R11-Pad1).
+Connected U2 pin 7 to Net-(R12-Pad1).
+Connected U2 pin 8 to PXL_GND.
+Add net unconnected-(U2-Pad9).
+Connected U2 pin 9 to unconnected-(U2-Pad9).
+Connected U2 pin 10 to PXL_VCC.
+Connected U2 pin 11 to CLK_OUT.
+Connected U2 pin 12 to LTCH_OUT.
+Connected U2 pin 13 to PXL_GND.
+Connected U2 pin 14 to BIT_OUT.
+Connected U2 pin 15 to Net-(R5-Pad1).
+Connected U2 pin 16 to PXL_VCC.
+Added C2 (footprint 'Capacitor_SMD:C_1206_3216Metric_Pad1.33x1.80mm_HandSolder').
+Added U3 (footprint 'clock:COM-09481').
+Changed REF** reference designator to U3.
+Updated U3 symbol association from  to /73b55c55-0c23-4c38-af42-e7c227ae0c97.
+Updated U3 properties.
+Connected U3 pin 1 to DIG1.
+Connected U3 pin 2 to DIG2.
+Connected U3 pin 3 to SEG_D.
+Connected U3 pin 4 to PXL_VCC.
+Connected U3 pin 5 to SEG_E.
+Connected U3 pin 6 to DIG3.
+Connected U3 pin 7 to PXL_VCC.
+Connected U3 pin 8 to DIG4.
+Connected U3 pin 9 to PXL_VCC.
+Connected U3 pin 10 to PXL_VCC.
+Connected U3 pin 11 to SEG_F.
+Connected U3 pin 12 to COLON.
+Connected U3 pin 13 to SEG_C.
+Connected U3 pin 14 to SEG_A.
+Connected U3 pin 15 to SEG_G.
+Connected U3 pin 16 to SEG_B.
+Changed REF** reference designator to C2.
+Added U4 (footprint 'Connector_PinHeader_2.00mm:PinHeader_2x03_P2.00mm_Vertical').
+Changed REF** reference designator to U4.
+Changed U4 value from PinHeader_2x03_P2.00mm_Vertical to AVR-ISP-6.
+Updated U4 symbol association from  to /bbb0f7d4-48ae-4929-969f-d510230ebf17.
+Updated U4 properties.
+Connected U4 pin 1 to MISO.
+Connected U4 pin 2 to PXL_VCC.
+Connected U4 pin 3 to SCK.
+Connected U4 pin 4 to MOSI.
+Connected U4 pin 5 to RST.
+Connected U4 pin 6 to PXL_GND.
+Changed C2 value from C_1206_3216Metric_Pad1.33x1.80mm_HandSolder to 1u.
+Added Y1 (footprint 'Crystal:Crystal_AT310_D3.0mm_L10.0mm_Horizontal').
+Changed REF** reference designator to Y1.
+Changed Y1 value from Crystal_AT310_D3.0mm_L10.0mm_Horizontal to Crystal.
+Updated Y1 symbol association from  to /ee47aa4c-7bae-430a-a957-3b4fa120189d.
+Updated Y1 properties.
+Connected Y1 pin 1 to Net-(U1-Pad10).
+Connected Y1 pin 2 to Net-(U1-Pad9).
+
+
+Info: Total warnings: 0, errors: 0.
